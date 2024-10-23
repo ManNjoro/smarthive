@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from smarthive.views import views
+from .views import views
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
