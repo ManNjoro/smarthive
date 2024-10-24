@@ -40,8 +40,8 @@ const About = () => {
               Model Building and Deployment
             </h3>
             <p>
-              We use advanced clustering algorithms like K-means and DBSCAN to
-              segment customers. Our user-friendly dashboard allows businesses
+              We use advanced clustering algorithms like Hierarchical Clustering,to
+              segment customers. Our user-friendly web application allows businesses
               to deploy these models, enabling real-time visualization and
               campaign execution.
             </p>

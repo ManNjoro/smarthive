@@ -52,10 +52,10 @@ const Home = () => {
           </div>
           <div className="bg-gray-200 p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-4">
-              Interactive Dashboard
+              Interactive Web Application
             </h3>
             <p>
-              Deploy the model through an easy-to-use dashboard that allows
+              Deploy the model through an easy-to-use web application that allows
               stakeholders to visualize segments, run campaigns, and track
               performance in real time.
             </p>
