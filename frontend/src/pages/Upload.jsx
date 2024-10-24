@@ -167,7 +167,7 @@ export default function Upload() {
               </tbody>
             </table>
           </div>
-          <div className="overflow-x-auto w-full max-w-6xl mb-6">
+          <div className="overflow-x-auto w-full max-w-6xl mb-6 py-3">
             <ClustersBarChart clusters={clusters} />
           </div>
         </>
