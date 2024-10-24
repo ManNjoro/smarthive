@@ -22,7 +22,7 @@ export default function Upload() {
   // Fetch clusters when the component is mounted
   const fetchClusters = async () => {
     try {
-      const res = await axios.get("https://8ac6-102-216-154-66.ngrok-free.app/api/clusters");
+      const res = await axios.get("http://localhost:5000/api/clusters");
       if (res.status === 200) {
         setClusters(res.data.clusters);
       }
@@ -40,7 +40,7 @@ export default function Upload() {
     try {
       setIsLoading(true);
       const res = await axios.post(
-        "https://8ac6-102-216-154-66.ngrok-free.app/api/hierarchical",
+        "http://localhost:5000/api/hierarchical",
         data
       );
       if (res.status === 200) {
