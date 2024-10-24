@@ -3,8 +3,10 @@
 ## Installation
 
 ```bash
-git clone `https://github.com/ManNjoro/smarthive`
+git clone https://github.com/ManNjoro/smarthive
 ```
+
+## **Backend Installation**
 
 ### Create a virtual environment
 
