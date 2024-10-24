@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Rout } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Upload from './pages/Upload';
 // The Upload component you shared earlier
