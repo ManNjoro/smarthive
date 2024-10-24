@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ClustersBarChart from "./ClustersBarChart";
 
 // http://localhost:5000/api/hierarchical
 export default function Upload() {
@@ -18,6 +19,19 @@ export default function Upload() {
     });
   };
 
+  // Fetch clusters when the component is mounted
+  const fetchClusters = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/clusters");
+      if (res.status === 200) {
+        setClusters(res.data.clusters);
+      }
+    } catch (error) {
+      console.error("Error fetching clusters:", error);
+      toast.error("Failed to fetch clusters.");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
@@ -25,10 +39,13 @@ export default function Upload() {
 
     try {
       setIsLoading(true);
-      const res = await axios.post("http://localhost:5000/api/hierarchical", data);
+      const res = await axios.post(
+        "http://localhost:5000/api/hierarchical",
+        data
+      );
       if (res.status === 200) {
         toast.success(res.data.message);
-        setClusters(res.data.clusters);
+        await fetchClusters();
       }
     } catch (error) {
       console.error(error);
@@ -38,24 +55,19 @@ export default function Upload() {
     }
   };
 
-   // Function to format the date from different columns
-   const formatDateTime = (year, day, month) => {
-    // Assume year is 2024, or you can pass year if available
-    const date = new Date(year, month - 1, day);
-    return date.toLocaleDateString(); // Returns a formatted date-time string
-  };
-
-  // Function to format the time
-const formatTime = (hours, minute) => {
-    const time = new Date(2024, 0, 1, hours, minute); // Dummy date with time
-    return time.toLocaleTimeString([], { hour: '2-digit' , minute: '2-digit'}); // Format the time as HH:MM
-  };
-
   const togglePredictions = () => {
     setShowPredictions(!showPredictions);
   };
   console.log(clusters);
-  
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  useEffect(() => {
+    fetchClusters();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
@@ -109,48 +121,60 @@ const formatTime = (hours, minute) => {
       )}
 
       {showPredictions && clusters.length > 0 && (
-        <div className="overflow-x-auto w-full max-w-4xl">
-          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
-            <thead>
-              <tr className="bg-gray-200 text-gray-700">
-                <th className="py-2 px-4">Cluster</th>
-                <th className="py-2 px-4">Country</th>
-                <th className="py-2 px-4">Customer ID</th>
-                <th className="py-2 px-4">Date</th>
-                <th className="py-2 px-4">Time</th>
-                <th className="py-2 px-4">Invoice Day of Week</th>
-                <th className="py-2 px-4">Invoice No</th>
-                <th className="py-2 px-4">Quantity</th>
-                <th className="py-2 px-4">Stock Code</th>
-                <th className="py-2 px-4">Total Price</th>
-                <th className="py-2 px-4">Unit Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              {clusters.map((cluster, index) => (
-                <tr key={index} className="text-center border-t">
-                  <td className="py-2 px-4">{cluster.Cluster}</td>
-                  <td className="py-2 px-4">{cluster.Country}</td>
-                  <td className="py-2 px-4">{cluster.CustomerID}</td>
-                  <td className="py-2 px-4">{formatDateTime(
-                    cluster.InvoiceYear,
-                      cluster.InvoiceDay,
-                      cluster.InvoiceMonth
-                    )}</td>
-                    <td className="py-2 px-4">
-        {formatTime(cluster.InvoiceHour, cluster.InvoiceMinute)} {/* New Time Column */}
-      </td>
-                  <td className="py-2 px-4">{cluster.InvoiceDayOfWeek}</td>
-                  <td className="py-2 px-4">{cluster.InvoiceNo}</td>
-                  <td className="py-2 px-4">{cluster.Quantity}</td>
-                  <td className="py-2 px-4">{cluster.StockCode}</td>
-                  <td className="py-2 px-4">{cluster.TotalPrice}</td>
-                  <td className="py-2 px-4">{cluster.UnitPrice}</td>
+        <>
+          <div className="overflow-x-auto w-full max-w-6xl mb-6">
+            {" "}
+            {/* Adjust max width here */}
+            <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md table-auto">
+              {" "}
+              {/* table-auto to adjust column widths */}
+              <thead>
+                <tr className="bg-gray-200 text-gray-700">
+                  <th className="py-2 px-4 w-1/12">Cluster</th>{" "}
+                  {/* Adjust column width */}
+                  <th className="py-2 px-4 w-2/12">Country</th>
+                  <th className="py-2 px-4 w-1/12">Customer ID</th>
+                  <th className="py-2 px-4 w-2/12">Date</th>
+                  <th className="py-2 px-4 w-1/12">Time</th>
+                  <th className="py-2 px-4 w-2/12">Invoice Day of Week</th>
+                  <th className="py-2 px-4 w-2/12">Invoice No</th>
+                  <th className="py-2 px-4 w-1/12">Quantity</th>
+                  <th className="py-2 px-4 w-2/12">Stock Code</th>
+                  <th className="py-2 px-4 w-2/12">Total Price</th>
+                  <th className="py-2 px-4 w-2/12">Unit Price</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {clusters.map((cluster, index) => (
+                  <tr
+                    key={index}
+                    className="text-center border-t hover:bg-gray-100"
+                  >
+                    <td className="py-2 px-4">{cluster.Cluster}</td>
+                    <td className="py-2 px-4 truncate">
+                      {cluster.Country}
+                    </td>{" "}
+                    {/* 'truncate' to prevent overflow */}
+                    <td className="py-2 px-4">{cluster.CustomerID}</td>
+                    <td className="py-2 px-4">
+                      {formatDate(cluster.InvoiceDate)}
+                    </td>
+                    <td className="py-2 px-4">{cluster.InvoiceTime}</td>
+                    <td className="py-2 px-4">{cluster.InvoiceDayOfWeek}</td>
+                    <td className="py-2 px-4">{cluster.InvoiceNo}</td>
+                    <td className="py-2 px-4">{cluster.Quantity}</td>
+                    <td className="py-2 px-4">{cluster.StockCode}</td>
+                    <td className="py-2 px-4">{cluster.TotalPrice}</td>
+                    <td className="py-2 px-4">{cluster.UnitPrice}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="overflow-x-auto w-full max-w-6xl mb-6">
+            <ClustersBarChart clusters={clusters} />
+          </div>
+        </>
       )}
     </div>
   );

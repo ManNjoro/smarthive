@@ -3,6 +3,8 @@ import Navbar from './components/Navbar';
 import Upload from './pages/Upload';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Home from './pages/Home';
+import About from './pages/About';
 
 
 function App() {
@@ -15,8 +17,8 @@ function App() {
 
         {/* Routes */}
         <Routes>
-          {/* <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} /> */}
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/upload" element={<Upload />} />
         </Routes>
       </div>

@@ -1,3 +1,4 @@
+import json
 import os
 from flask import Blueprint, request, jsonify
 import joblib
@@ -62,8 +63,29 @@ def hierarchical():
         # Add the cluster labels to the dataframe for reference
         df_test['Cluster'] = cluster_labels
         
+        # Rename columns to 'year', 'month', 'day' for combining into a single 'InvoiceDate'
+        df_test.rename(columns={'InvoiceYear': 'year', 'InvoiceMonth': 'month', 'InvoiceDay': 'day'}, inplace=True)
+        
+         # Combine 'InvoiceDay', 'InvoiceMonth', and 'InvoiceYear' into a single 'InvoiceDate'
+        df_test['InvoiceDate'] = pd.to_datetime(df_test[['year', 'month', 'day']])
+
+        # Optionally: Format the 'InvoiceDate' column in a human-readable format
+        df_test['InvoiceDate'] = df_test['InvoiceDate'].dt.strftime('%Y-%m-%d')  # Or '%d/%m/%Y', based on your preference
+        
+        # Optionally: Combine 'InvoiceHour' and 'InvoiceMinute' into a single 'InvoiceTime' column
+        df_test['InvoiceTime'] = df_test['InvoiceHour'].astype(str).str.zfill(2) + ':' + df_test['InvoiceMinute'].astype(str).str.zfill(2)
+
+        # Drop the individual 'InvoiceYear', 'InvoiceMonth', etc., if not needed
+        df_test.drop(columns=['year', 'month', 'day', 'InvoiceHour', 'InvoiceMinute'], inplace=True)
+        
+        # Map dayofweek (0 = Monday, 6 = Sunday) to actual day names
+        day_of_week_map = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
+        df_test['InvoiceDayOfWeek'] = df_test['InvoiceDayOfWeek'].map(day_of_week_map)
+        
         # Convert the DataFrame to a dictionary to send as a JSON response
         result = df_test.to_dict(orient='records')
+        with open('clusters.json', 'w') as f:
+            json.dump(result, f, indent=4)
         
         # You can now return a successful message or process the data further
         return jsonify({"message": "File uploaded and processed successfully!", "clusters": result})
@@ -132,4 +154,14 @@ def kmeans():
 @views.route('/index', methods=['GET'])
 def index():
     return "<h1>Hello</h1>"
+
+@views.route('/clusters', methods=['GET'])
+def get_clusters():
+    try:
+        with open('clusters.json', 'r') as f:
+            data = json.load(f)
+        return jsonify({"clusters": data})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
        
