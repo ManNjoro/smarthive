@@ -27,8 +27,10 @@ export default function Upload() {
         setClusters(res.data.clusters);
       }
     } catch (error) {
-      console.error("Error fetching clusters:", error);
-      toast.error("Failed to fetch clusters.");
+      if (error.status !== 404){
+        console.error("Error fetching clusters:", error);
+        toast.error("Failed to fetch clusters.");
+      }
     }
   };
 
@@ -123,15 +125,10 @@ export default function Upload() {
       {showPredictions && clusters.length > 0 && (
         <>
           <div className="overflow-x-auto w-full max-w-6xl mb-6">
-            {" "}
-            {/* Adjust max width here */}
             <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md table-auto">
-              {" "}
-              {/* table-auto to adjust column widths */}
               <thead>
                 <tr className="bg-gray-200 text-gray-700">
-                  <th className="py-2 px-4 w-1/12">Cluster</th>{" "}
-                  {/* Adjust column width */}
+                  <th className="py-2 px-4 w-1/12">Cluster</th>
                   <th className="py-2 px-4 w-2/12">Country</th>
                   <th className="py-2 px-4 w-1/12">Customer ID</th>
                   <th className="py-2 px-4 w-2/12">Date</th>
@@ -153,8 +150,7 @@ export default function Upload() {
                     <td className="py-2 px-4">{cluster.Cluster}</td>
                     <td className="py-2 px-4 truncate">
                       {cluster.Country}
-                    </td>{" "}
-                    {/* 'truncate' to prevent overflow */}
+                    </td>
                     <td className="py-2 px-4">{cluster.CustomerID}</td>
                     <td className="py-2 px-4">
                       {formatDate(cluster.InvoiceDate)}

@@ -87,8 +87,7 @@ def hierarchical():
         with open('clusters.json', 'w') as f:
             json.dump(result, f, indent=4)
         
-        # You can now return a successful message or process the data further
-        return jsonify({"message": "File uploaded and processed successfully!", "clusters": result})
+        return jsonify({"message": "File uploaded and processed successfully!"})
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -161,7 +160,8 @@ def get_clusters():
         with open('clusters.json', 'r') as f:
             data = json.load(f)
         return jsonify({"clusters": data})
+    except FileNotFoundError as e:
+        return jsonify({"error": "You have not uploaded any excel file"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
        
