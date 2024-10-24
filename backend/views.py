@@ -27,8 +27,12 @@ def hierarchical():
         # Extract features from InvoiceDate
         df['InvoiceHour'] = df['InvoiceDate'].dt.hour
         df['InvoiceDay'] = df['InvoiceDate'].dt.day
+        df['InvoiceMinute'] = df['InvoiceDate'].dt.minute
         df['InvoiceMonth'] = df['InvoiceDate'].dt.month
+        df['InvoiceYear'] = df['InvoiceDate'].dt.year
         df['InvoiceDayOfWeek'] = df['InvoiceDate'].dt.dayofweek
+        
+        print("df",df.head())
         
         df_test = df.drop(columns=['Description', 'InvoiceDate'])
 
@@ -49,9 +53,9 @@ def hierarchical():
         # For demonstration, printing the first few rows
         print(df_test.head())
         
-        model_path = os.path.join(os.getcwd(), 'smarthive/hierarchical_model.joblib')
+        model_path = os.path.join(os.getcwd(), 'hierarchical_model.joblib')
         print(model_path)
-        model = joblib.load(model_path)
+        model = joblib.load('hierarchical_model.joblib')
         
         cluster_labels = model.fit_predict(df_test)
         
